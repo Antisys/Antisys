@@ -1,0 +1,77 @@
+[package]
+name = "first_rust_program"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+# when the default feature set is updated, verify that the `--features` flags in
+# `.github/workflows/ci.yaml` are updated accordingly
+default = ["curl-client", "middleware-logger", "encoding"]
+curl-client = ["http-client/curl_client", "once_cell", "default-client"]
+h1-client = [
+    "http-client/h1_client",
+    "http-client/native-tls",
+    "once_cell",
+    "default-client",
+    "async-native-tls",
+]
+h1-client-no-tls = [
+    "http-client/h1_client",
+    "once_cell",
+    "default-client",
+]
+h1-client-rustls = [
+    "http-client/h1_client",
+    "http-client/rustls",
+    "once_cell",
+    "default-client",
+    "rustls_crate",
+]
+hyper-client = [
+    "http-client/hyper_client",
+    "once_cell",
+    "default-client",
+    "async-std/tokio02",
+]
+wasm-client = [
+    "http-client/wasm_client",
+    "default-client",
+    "getrandom/js",
+    "web-sys",
+]
+default-client = []
+middleware-logger = []
+# requires web-sys for TextDecoder on wasm
+encoding = ["encoding_rs", "web-sys"]
+
+[dependencies]
+surf = "2.3.2"
+tokio = {version="1.17", features=["full"]}
+futures-util = { version = "0.3.5", features = ["io"] }
+log = { version = "0.4.7", features = ["kv_unstable"] }
+mime_guess = "2.0.3"
+serde = "1.0.97"
+serde_json = "1.0.40"
+http-client = { version = "6.5.0", default-features = false }
+http-types = "2.5.0"
+async-std = { version = "1.6.0", default-features = false, features = ["std"] }
+async-trait = "0.1.36"
+pin-project-lite = "0.2.0"
+once_cell = { version = "1.4.1", optional = true }
+cfg-if = "1.0.0"
+getrandom = "0.2.0"
+encoding_rs = { version = "0.8.20", optional = true }
+rustls_crate = { version = "0.20.6", optional = true, package = "rustls" }
+async-native-tls = { version = "0.4.0", optional = true }
+
+web-sys = { optional = true, version = "0.3.25", features = ["TextDecoder"] }
+
+
+[dev-dependencies]
+async-std = { version = "1.6.0", features = ["attributes"] }
+femme = "2.2.1"
+serde = { version = "1.0.97", features = ["derive"] }
+mockito = "0.31.0"
+tide = "0.16.0"
